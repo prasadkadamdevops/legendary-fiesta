@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: python-devops-demo
+  namespace: demo
+  labels:
+    app: python-devops-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: python-devops-demo
+  template:
+    metadata:
+      labels:
+        app: python-devops-demo
+    spec:
+      containers:
+        - name: python-devops-demo
+          image: YOUR_DOCKERHUB_USERNAME/python-devops-demo:latest
+          ports:
+            - containerPort: 8000
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 15
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "300m"
+              memory: "256Mi"
